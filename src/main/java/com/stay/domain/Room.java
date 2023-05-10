@@ -1,4 +1,4 @@
-package com.stay.model;
+package com.stay.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

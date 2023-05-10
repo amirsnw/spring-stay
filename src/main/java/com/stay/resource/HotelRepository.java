@@ -1,6 +1,6 @@
 package com.stay.resource;
 
-import com.stay.model.Hotel;
+import com.stay.domain.Hotel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,10 +1,9 @@
 package com.stay.controller;
 
-import com.stay.exception.HotelNotFoundException;
-import com.stay.model.Hotel;
-import com.stay.model.Room;
-import com.stay.resource.HotelRepository;
-import com.stay.resource.RoomRepository;
+import com.stay.domain.Hotel;
+import com.stay.domain.Room;
+import com.stay.service.HotelService;
+import com.stay.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -15,99 +14,80 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
+@RequestMapping("/hotels")
 public class HotelController {
 
 	@Autowired
-	private HotelRepository hotelRepository;
-	
-	@Autowired
-	private RoomRepository roomRepository;
+	private HotelService hotelService;
 
-	@GetMapping("/jpa/hotels")
+	@Autowired
+	private RoomService roomService;
+
+	@GetMapping
 	public List<Hotel> retrieveAllHotels() {
-		return hotelRepository.findAll();
+		return hotelService.getHotelList();
 	}
 
-	@GetMapping("/jpa/hotels/{id}")
+	@PostMapping
+	public ResponseEntity<Object> createHotel(@Valid @RequestBody Hotel hotel) {
+		Hotel savedHotel = hotelService.saveHotel(hotel);
+
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(savedHotel.getId()).toUri();
+
+		return ResponseEntity.created(location).build();
+	}
+
+	@GetMapping("/{id}")
 	public EntityModel<Hotel> retrieveHotel(@PathVariable int id) {
-		Optional<Hotel> hotel = hotelRepository.findById(id);
+		Hotel hotel = hotelService.getHotel(id);
 
-		if (!hotel.isPresent())
-			throw new HotelNotFoundException("id-" + id);
+		// Create hateoas resource
+		EntityModel<Hotel> resource = EntityModel.of(hotel); // new EntityModel<Hotel>(hotel.get());
 
-		// "all-hotels", SERVER_PATH + "/hotels"
-		// retrieveAllHotels
-		EntityModel<Hotel> resource = EntityModel.of(hotel.get());//new EntityModel<Hotel>(hotel.get());
-
+		// Link to retrieveAllHotels resource
 		WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllHotels());
 
+		// Add "all-hotels" link to hateoas resource
 		resource.add(linkTo.withRel("all-hotels"));
-
-		// HATEOAS
 
 		return resource;
 	}
 
-	@DeleteMapping("/jpa/hotels/{id}")
+	@DeleteMapping("/{id}")
 	public void deleteHotel(@PathVariable int id) {
-		hotelRepository.deleteById(id);
+		hotelService.deleteHotel(id); // Returns 200
 	}
 
-	//
-	// input - details of hotel
-	// output - CREATED & Return the created URI
+	// Room Related Resources
 
-	// HATEOAS
-
-	@PostMapping("/jpa/hotels")
-	public ResponseEntity<Object> createHotel(@Valid @RequestBody Hotel hotel) {
-		Hotel savedHotel = hotelRepository.save(hotel);
-
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedHotel.getId())
-				.toUri();
-
-		return ResponseEntity.created(location).build();
-
-	}
-	
-	@GetMapping("/jpa/hotels/{id}/rooms")
-	public List<Room> retrieveAllHotels(@PathVariable int id) {
-		Optional<Hotel> hotelOptional = hotelRepository.findById(id);
-		
-		if(!hotelOptional.isPresent()) {
-			throw new HotelNotFoundException("id-" + id);
-		}
-		
-		return hotelOptional.get().getRooms();
-	}
-
-
-	@PostMapping("/jpa/hotels/{id}/rooms")
+	@PostMapping("/{id}/rooms")
 	public ResponseEntity<Object> createRoom(@PathVariable int id, @RequestBody Room room) {
-		
-		Optional<Hotel> hotelOptional = hotelRepository.findById(id);
-		
-		if(!hotelOptional.isPresent()) {
-			throw new HotelNotFoundException("id-" + id);
-		}
 
-		Hotel hotel = hotelOptional.get();
-		
+		Hotel hotel = hotelService.getHotel(id);
+
+		// connect hotel to room
 		room.setHotel(hotel);
-		
-		roomRepository.save(room);
-		
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(room.getId())
-				.toUri();
+
+		roomService.saveRoom(room);
+
+		// Append id of created room to current URI
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}").buildAndExpand(room.getId()).toUri();
 
 		return ResponseEntity.created(location).build();
-
 	}
 
+	@GetMapping("/{id}/rooms")
+	public List<Room> retrieveAllHotelRooms(@PathVariable int id) {
+
+		Hotel hotel = hotelService.getHotel(id);
+
+		return hotel.getRooms();
+	}
 }

@@ -1,6 +1,6 @@
 package com.stay.resource.cache;
 
-import com.stay.model.Room;
+import com.stay.domain.Room;
 import org.springframework.beans.factory.annotation.Value;
 
 public class RoomCache extends BaseCacheImpl<Integer, Room> {
