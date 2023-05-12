@@ -2,9 +2,11 @@ package com.stay.controller;
 
 import com.stay.domain.Hotel;
 import com.stay.domain.Room;
+import com.stay.resource.cache.BaseCache;
 import com.stay.service.HotelService;
 import com.stay.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +30,13 @@ public class HotelController {
 	@Autowired
 	private RoomService roomService;
 
+	@Autowired
+	@Qualifier("room-cache")
+	private BaseCache cacheService;
+
 	@GetMapping
 	public List<Hotel> retrieveAllHotels() {
+		cacheService.getAll();
 		return hotelService.getHotelList();
 	}
 

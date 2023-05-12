@@ -1,5 +1,6 @@
 package com.stay.resource.cache;
 
+import com.stay.propertyEditor.cache.CacheConfigModel;
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.LRUMap;
 
@@ -36,14 +37,14 @@ public class BaseCacheImpl<K, T> implements BaseCache<K, T> {
     }
 
 
-    public BaseCacheImpl(long timeToLive, final long timerInterval, int maxItems) {
-        this.timeToLive = timeToLive * 1000;
-        cacheMap = new LRUMap(maxItems);
-        if (timeToLive > 0 && timerInterval > 0) {
+    public BaseCacheImpl(CacheConfigModel config) {
+        this.timeToLive = config.getTimeToLive() * 1000;
+        cacheMap = new LRUMap(config.getMaxItems());
+        if (timeToLive > 0 && config.getTimerInterval() > 0) {
             Thread t = new Thread(() -> { // Runnable Class
                 while (true) {
                     try {
-                        Thread.sleep(timerInterval * 1000);
+                        Thread.sleep(config.getTimerInterval() * 1000);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }

@@ -1,11 +1,11 @@
 package com.stay.service;
 
 import com.stay.domain.Hotel;
-import com.stay.exception.HotelNotFoundException;
 import com.stay.resource.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public class HotelService {
         Optional<Hotel> hotel = hotelRepository.findById(id);
 
         if (!hotel.isPresent())
-            throw new HotelNotFoundException("id-" + id);
+            throw new EntityNotFoundException("id-" + id);
 
         return hotel.get();
     }

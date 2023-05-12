@@ -1,5 +1,7 @@
 package com.stay.resource.cache;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 public interface BaseCache<K, T> {
