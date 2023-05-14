@@ -15,6 +15,7 @@ public class PersonVersioningController {
 		return new PersonV2(new Name("Bob", "Charlie"));
 	}
 
+	// Version by PathParam
 	@GetMapping(value = "/person/param", params = "version=1")
 	public PersonV1 paramV1() {
 		return new PersonV1("Bob Charlie");
@@ -25,6 +26,7 @@ public class PersonVersioningController {
 		return new PersonV2(new Name("Bob", "Charlie"));
 	}
 
+	// Version by Header
 	@GetMapping(value = "/person/header", headers = "X-API-VERSION=1")
 	public PersonV1 headerV1() {
 		return new PersonV1("Bob Charlie");
@@ -35,6 +37,7 @@ public class PersonVersioningController {
 		return new PersonV2(new Name("Bob", "Charlie"));
 	}
 
+	// Version by Accept Header
 	@GetMapping(value = "/person/produces", produces = "application/vnd.company.app-v1+json")
 	public PersonV1 producesV1() {
 		return new PersonV1("Bob Charlie");

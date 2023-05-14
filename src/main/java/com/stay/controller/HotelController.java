@@ -5,9 +5,11 @@ import com.stay.domain.Room;
 import com.stay.resource.cache.BaseCache;
 import com.stay.service.HotelService;
 import com.stay.service.RoomService;
+import com.stay.util.Statistic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,9 @@ public class HotelController {
 	@Qualifier("room-cache")
 	private BaseCache cacheService;
 
+	@Autowired
+	private Statistic statistic;
+
 	@GetMapping
 	public List<Hotel> retrieveAllHotels() {
 		cacheService.getAll();
@@ -52,6 +57,7 @@ public class HotelController {
 
 	@GetMapping("/{id}")
 	public EntityModel<Hotel> retrieveHotel(@PathVariable int id) {
+
 		Hotel hotel = hotelService.getHotel(id);
 
 		// Create hateoas resource
@@ -62,6 +68,7 @@ public class HotelController {
 
 		// Add "all-hotels" link to hateoas resource
 		resource.add(linkTo.withRel("all-hotels"));
+		resource.add(new Link(String.valueOf(statistic.getNextValue()), "total-visit"));
 
 		return resource;
 	}
