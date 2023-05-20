@@ -3,10 +3,10 @@ package com.stay;
 import com.stay.domain.Room;
 import com.stay.lifecycle.ElectricityGenerator;
 import com.stay.propertyEditor.cache.CacheConfigModel;
+import com.stay.propertyEditor.passenger.FullNameModel;
 import com.stay.resource.cache.BaseCache;
 import com.stay.resource.cache.BaseCacheImpl;
 import com.stay.resource.cache.CacheFactory;
-import com.stay.util.RoomValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -20,19 +20,40 @@ public class AppConfiguration {
     @Bean
     public CacheFactory cacheFactoryBean() {
         CacheFactory factory = new CacheFactory();
-        factory.addBean("default", null);
+        factory.addBean("default",
+                new BaseCacheImpl<String, Object>(new CacheConfigModel(60, 200, 3)));
         factory.addBean("room",
                 new BaseCacheImpl<Integer, Room>(new CacheConfigModel(120, 500, 6)));
         return factory;
     }
+    // Note: Use FactoryBean to inject third-party classes that should be initialized by their specific getInstance method
+    /*
+        XML solution for to get the default Cache bean:
+
+        <!-- This factory contains calling the getInstance method of the thirdParty class -->
+        <bean id="defaultCacheFactoryBean"
+             class="com.stay.resource.cache.CacheFactory"
+             p:beanName="default"/>
+
+        <!-- Third-party bean with no access to its code -->
+        <bean id="default-cache" factory-bean="defaultCacheFactoryBean" factory-method="getObject"/>
+
+        <!-- Modify previously scanned bean definition -->
+        <bean id="reservationController"
+            class="com.stay.controller.ReservationController">
+            <property name="cacheService" ref="default-cache" />
+        </bean>
+    */
 
     @Bean("room-cache")
     public BaseCache roomCacheBean() {
-        return (BaseCache) cacheFactoryBean().getBean("cache:room", Room.class);
+        return (BaseCache) cacheFactoryBean().getBean("room", Room.class);
     }
+
 
     @Bean(initMethod = "generatorStarted", destroyMethod = "stopGenerator")
     @Lazy
+    // Default eager bootstrapping is by ApplicationContext
     public ElectricityGenerator electricityGen() {
         return new ElectricityGenerator();
         // If initialization fails the exception wrap into BeanCreationException

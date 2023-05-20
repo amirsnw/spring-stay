@@ -8,8 +8,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.SmartLifecycle;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -17,16 +15,21 @@ import javax.annotation.PreDestroy;
 
 // After calling constructor, BeanPostProcessor checks for
 public class ElectricityGenerator implements SmartLifecycle,
-                                    BeanNameAware,
+                                    BeanNameAware, // instead of Nameable interface
                                     BeanClassLoaderAware,
                                     ApplicationContextAware,
                                     InitializingBean,
-                                    DisposableBean // Interface Hooks are not decouple
-                                                    // Used when we have multiple bean with the same TYPE
+                                    DisposableBean
+        // Interface Hooks are not decouple
+        // Used when we have multiple bean with the same TYPE
 {
 
     // SmartLifecycle Methods
     private boolean isRunning = false;
+
+    public ElectricityGenerator() {
+        System.out.println("(0) Constructor (then beans get analyzed by BeanPostProcessor for any lifecycle method");
+    }
 
     @Override
     public void start() {
@@ -76,6 +79,7 @@ public class ElectricityGenerator implements SmartLifecycle,
         // Runs before initialization and destroy
         // Before returning the first instance by ApplicationContext.getBean()
         System.out.println("(1) Generator Started (BeanNameAware interface)");
+        // We can change Bean name by our logic
     }
 
     // BeanClassLoader Lifecycle Method
@@ -92,11 +96,14 @@ public class ElectricityGenerator implements SmartLifecycle,
         /*if (applicationContext instanceof GenericApplicationContext) {
             ((GenericApplicationContext) applicationContext).registerShutdownHook();
         }*/
+        // We can access the bean that has injected this class into and
+        // use programmatic injection instead of lookup injection (not recommended)
     }
 
     // Annotation-based Post Construct Hook
     // Decoupled
     @PostConstruct
+    // Analyzed by CommonAnnotationBeanPostProcessor
     public void init() {
         // Add your initialization logic here
         // First method after constructor
@@ -113,8 +120,11 @@ public class ElectricityGenerator implements SmartLifecycle,
     }
 
     // Called by bean annotation attribute (initMethod)
-    public void generatorStarted() {
+    // Needs no argument
+    // private for safety
+    private void generatorStarted() {
         System.out.println("(6) Generator Started (initMethod)");
+        // BeanCreationException  may happen, so you return null for an object than throwing exception
     }
 
     // Annotation-based Pre Destroy Hook

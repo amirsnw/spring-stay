@@ -1,6 +1,7 @@
 package com.stay.controller;
 
 import com.stay.domain.Hotel;
+import com.stay.domain.Passenger;
 import com.stay.domain.Room;
 import com.stay.resource.cache.BaseCache;
 import com.stay.resource.cache.CacheFactory;
@@ -12,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,13 @@ public class ReservationController {
         cacheService.put(roomId, room);
 
         return messageSource.getMessage("welcome.home.message", new String[]{room.getNumber()},
+                LocaleContextHolder.getLocale());
+    }
+
+    @PostMapping()
+    public String registerPassenger(@Valid @RequestBody Passenger passenger) {
+
+        return messageSource.getMessage("welcome.home.message", new String[]{passenger.getFullName().toString()},
                 LocaleContextHolder.getLocale());
     }
 
