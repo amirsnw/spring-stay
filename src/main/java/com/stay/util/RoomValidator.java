@@ -1,6 +1,6 @@
 package com.stay.util;
 
-import com.stay.domain.Room;
+import com.stay.domain.entity.RoomEntity;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -8,7 +8,7 @@ import java.util.List;
 
 // Pure Java (can not inject spring beans): implements ConstraintValidator<RoomConstraint, Room>
 // Test org.springframework.validation.Validator
-public class RoomValidator implements ConstraintValidator<RoomConstraint, Room> {
+public class RoomValidator implements ConstraintValidator<RoomConstraint, RoomEntity> {
 
     /*@Override
     @SuppressWarnings("unchecked")
@@ -31,10 +31,13 @@ public class RoomValidator implements ConstraintValidator<RoomConstraint, Room> 
     }
 
     @Override
-    public boolean isValid(Room room, ConstraintValidatorContext context) {
-        List<Room> rooms = room.getHotel().getRooms();
-        for (Room hotelRoom : rooms) {
-            if (room.getNumber().equals(hotelRoom.getNumber())) {
+    public boolean isValid(RoomEntity roomEntity, ConstraintValidatorContext context) {
+        List<RoomEntity> rooms = roomEntity.getHotelEntity().getRoomEntities();
+        for (RoomEntity hotelRoom : rooms) {
+            if (roomEntity.getNumber().equals(hotelRoom.getNumber())) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate("The value 'number'" +
+                        " is duplicate").addPropertyNode("number").addConstraintViolation();
                 return false;
             }
         }

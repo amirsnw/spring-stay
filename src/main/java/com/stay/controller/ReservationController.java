@@ -1,10 +1,9 @@
 package com.stay.controller;
 
-import com.stay.domain.Hotel;
-import com.stay.domain.Passenger;
-import com.stay.domain.Room;
+import com.stay.domain.entity.HotelEntity;
+import com.stay.domain.entity.RoomEntity;
+import com.stay.domain.dto.FullNameDTO;
 import com.stay.resource.cache.BaseCache;
-import com.stay.resource.cache.CacheFactory;
 import com.stay.service.HotelService;
 import com.stay.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,29 +33,22 @@ public class ReservationController {
     @Autowired
     private MessageSource messageSource;
 
-    @PutMapping(path = "/{roomId}")
-    public String reserveRoom(@PathVariable int roomId) {
+    @PutMapping(path = "/{roomId}/{full-name}")
+    public String reserveRoom(@PathVariable int roomId, @PathVariable("full-name") FullNameDTO fullNameDTO) {
 
-        Room room = roomService.getRoom(roomId);
+        RoomEntity roomEntity = roomService.getRoom(roomId);
 
-        // Add room to cache (reserve)
-        cacheService.put(roomId, room);
+        // Add roomEntity to cache (reserve)
+        cacheService.put(roomId, roomEntity);
 
-        return messageSource.getMessage("welcome.home.message", new String[]{room.getNumber()},
-                LocaleContextHolder.getLocale());
-    }
-
-    @PostMapping()
-    public String registerPassenger(@Valid @RequestBody Passenger passenger) {
-
-        return messageSource.getMessage("welcome.home.message", new String[]{passenger.getFullName().toString()},
-                LocaleContextHolder.getLocale());
+        return messageSource.getMessage("welcome.home.message", new String[]{},
+                LocaleContextHolder.getLocale()) + " " + fullNameDTO.getRawFullName();
     }
 
     @DeleteMapping(path = "/{roomId}")
     public String releaseRoom(@PathVariable Integer roomId) {
 
-        // Remove room to cache (reserve)
+        // Remove roomEntity from cache (reserve)
         cacheService.remove(roomId);
 
         return messageSource.getMessage("goodbye.home.message", null,
@@ -77,13 +69,13 @@ public class ReservationController {
     }
 
     @GetMapping(path = "hotels/{hotelId}")
-    public List<Room> getReservedRooms(@PathVariable Integer hotelId) {
+    public List<RoomEntity> getReservedRooms(@PathVariable Integer hotelId) {
 
-        Hotel hotel = hotelService.getHotel(hotelId);
+        HotelEntity hotelEntity = hotelService.getHotel(hotelId);
 
-        List<Room> rooms = cacheService.getAll();
+        List<RoomEntity> roomEntities = cacheService.getAll();
 
-        return rooms.stream().filter(item -> item.getHotel().getId() == hotel.getId()).collect(Collectors.toList());
+        return roomEntities.stream().filter(item -> item.getHotelEntity().getId() == hotelEntity.getId()).collect(Collectors.toList());
     }
 
     // Using Locale as @RequestHeader argument

@@ -1,9 +1,8 @@
 package com.stay;
 
-import com.stay.domain.Room;
+import com.stay.domain.entity.RoomEntity;
 import com.stay.lifecycle.ElectricityGenerator;
-import com.stay.propertyEditor.cache.CacheConfigModel;
-import com.stay.propertyEditor.passenger.FullNameModel;
+import com.stay.domain.model.CacheConfigModel;
 import com.stay.resource.cache.BaseCache;
 import com.stay.resource.cache.BaseCacheImpl;
 import com.stay.resource.cache.CacheFactory;
@@ -23,7 +22,7 @@ public class AppConfiguration {
         factory.addBean("default",
                 new BaseCacheImpl<String, Object>(new CacheConfigModel(60, 200, 3)));
         factory.addBean("room",
-                new BaseCacheImpl<Integer, Room>(new CacheConfigModel(120, 500, 6)));
+                new BaseCacheImpl<Integer, RoomEntity>(new CacheConfigModel(120, 500, 6)));
         return factory;
     }
     // Note: Use FactoryBean to inject third-party classes that should be initialized by their specific getInstance method
@@ -47,7 +46,7 @@ public class AppConfiguration {
 
     @Bean("room-cache")
     public BaseCache roomCacheBean() {
-        return (BaseCache) cacheFactoryBean().getBean("room", Room.class);
+        return (BaseCache) cacheFactoryBean().getBean("room", RoomEntity.class);
     }
 
 

@@ -1,6 +1,6 @@
 package com.stay.service;
 
-import com.stay.domain.Room;
+import com.stay.domain.entity.RoomEntity;
 import com.stay.resource.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,11 +11,11 @@ public class RoomService {
     @Autowired
     private RoomRepository roomRepository;
 
-    public Room saveRoom(Room room) {
-        return roomRepository.save(room);
+    public RoomEntity saveRoom(RoomEntity roomEntity) {
+        return roomRepository.save(roomEntity);
     }
 
-    public Room getRoom(int id) {
+    public RoomEntity getRoom(int id) {
         return roomRepository.getById(id);
     }
 }

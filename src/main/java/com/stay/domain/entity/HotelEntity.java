@@ -1,4 +1,4 @@
-package com.stay.domain;
+package com.stay.domain.entity;
 
 import lombok.*;
 
@@ -12,19 +12,20 @@ import java.util.List;
 //@ApiModel(description="All details about the hotel.")
 @Entity
 @Getter @Setter @ToString @NoArgsConstructor @AllArgsConstructor @Builder
-public class Hotel {
+public class HotelEntity {
 
 	@Id
 	@GeneratedValue
 	private Integer id;
 
-	@Size(min = 2, message="Name should have atleast 2 characters")
-	// @ApiModelProperty(notes="Name should have atleast 2 characters")
+	@Size(min = 2, message="Name should have at least 2 characters")
+	// @ApiModelProperty(notes="Name should have at least 2 characters")
 	private String name;
 
-	// @ApiModelProperty(notes="Birth date should be in the past")
+	@Size(max = 500, message="Address should less than 500 character")
+	// @ApiModelProperty(notes="Address should less than 500 character")
 	private String address;
 	
-	@OneToMany(mappedBy = "hotel")
-	private List<Room> rooms;
+	@OneToMany(mappedBy = "hotelEntity")
+	private List<RoomEntity> roomEntities;
 }

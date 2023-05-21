@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,11 +21,12 @@ import java.util.*;
 @RestController
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                request.getDescription(false));
-        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    @Override
+    protected ResponseEntity<Object> handleBindException(BindException ex,
+                                                         HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), "Validation Failed",
+                ex.getBindingResult().toString());
+        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
     // Convert EntityNotFoundException to a REST response
@@ -35,16 +37,9 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), "Validation Failed",
-                ex.getBindingResult().toString());
-        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleCustomException(ConstraintViolationException ex, WebRequest request) {
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex,
+                                                                     WebRequest request) {
         Set<String> objectViolations = new HashSet<>();
         Map<String, Set<String>> propertyViolations = new HashMap<>();
 
@@ -89,6 +84,20 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity(results, headers, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(results, headers, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
+        Throwable rootCause = ex;
+        while (rootCause.getCause() != null) {
+            rootCause = rootCause.getCause();
+        }
+        if (rootCause instanceof javax.validation.ConstraintViolationException) {
+            return handleConstraintViolationException((javax.validation.ConstraintViolationException) rootCause, request);
+        }
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), rootCause.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

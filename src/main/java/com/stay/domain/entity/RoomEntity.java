@@ -1,4 +1,4 @@
-package com.stay.domain;
+package com.stay.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stay.util.RoomConstraint;
@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @RoomConstraint
 @Getter @Setter @ToString @NoArgsConstructor @AllArgsConstructor @Builder
-public class Room {
+public class RoomEntity {
 	
 	@Id
 	@GeneratedValue
@@ -18,10 +18,11 @@ public class Room {
 	private String number;
 
 	@ManyToOne(fetch=FetchType.LAZY)
+	// @JoinColumn(name="hotel-id")
 	@JsonIgnore
-	private Hotel hotel;
+	private HotelEntity hotelEntity;
 
-	public Room (String number) {
+	public RoomEntity(String number) {
 		this.number = number;
 	}
 }

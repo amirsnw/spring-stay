@@ -1,7 +1,7 @@
 package com.stay.controller;
 
-import com.stay.domain.Hotel;
-import com.stay.domain.Room;
+import com.stay.domain.entity.HotelEntity;
+import com.stay.domain.entity.RoomEntity;
 import com.stay.resource.cache.BaseCache;
 import com.stay.service.HotelService;
 import com.stay.service.RoomService;
@@ -40,14 +40,14 @@ public class HotelController {
 	private Statistic statistic;
 
 	@GetMapping
-	public List<Hotel> retrieveAllHotels() {
+	public List<HotelEntity> retrieveAllHotels() {
 		cacheService.getAll();
 		return hotelService.getHotelList();
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> createHotel(@Valid @RequestBody Hotel hotel) {
-		Hotel savedHotel = hotelService.saveHotel(hotel);
+	public ResponseEntity<Object> createHotel(@Valid @RequestBody HotelEntity hotelEntity) {
+		HotelEntity savedHotel = hotelService.saveHotel(hotelEntity);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(savedHotel.getId()).toUri();
@@ -56,12 +56,12 @@ public class HotelController {
 	}
 
 	@GetMapping("/{id}")
-	public EntityModel<Hotel> retrieveHotel(@PathVariable int id) {
+	public EntityModel<HotelEntity> retrieveHotel(@PathVariable int id) {
 
-		Hotel hotel = hotelService.getHotel(id);
+		HotelEntity hotelEntity = hotelService.getHotel(id);
 
 		// Create hateoas resource
-		EntityModel<Hotel> resource = EntityModel.of(hotel); // new EntityModel<Hotel>(hotel.get());
+		EntityModel<HotelEntity> resource = EntityModel.of(hotelEntity); // new EntityModel<Hotel>(hotelEntity.get());
 
 		// Link to retrieveAllHotels resource
 		WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllHotels());
@@ -81,27 +81,27 @@ public class HotelController {
 	// Room Related Resources
 
 	@PostMapping("/{id}/rooms")
-	public ResponseEntity<Object> createRoom(@PathVariable int id, @RequestBody Room room) {
+	public ResponseEntity<Object> createRoom(@PathVariable int id, @RequestBody RoomEntity roomEntity) {
 
-		Hotel hotel = hotelService.getHotel(id);
+		HotelEntity hotelEntity = hotelService.getHotel(id);
 
-		// connect hotel to room
-		room.setHotel(hotel);
+		// connect hotelEntity to roomEntity
+		roomEntity.setHotelEntity(hotelEntity);
 
-		roomService.saveRoom(room);
+		roomService.saveRoom(roomEntity);
 
-		// Append id of created room to current URI
+		// Append id of created roomEntity to current URI
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}").buildAndExpand(room.getId()).toUri();
+				.path("/{id}").buildAndExpand(roomEntity.getId()).toUri();
 
 		return ResponseEntity.created(location).build();
 	}
 
 	@GetMapping("/{id}/rooms")
-	public List<Room> retrieveAllHotelRooms(@PathVariable int id) {
+	public List<RoomEntity> retrieveAllHotelRooms(@PathVariable int id) {
 
-		Hotel hotel = hotelService.getHotel(id);
+		HotelEntity hotelEntity = hotelService.getHotel(id);
 
-		return hotel.getRooms();
+		return hotelEntity.getRoomEntities();
 	}
 }

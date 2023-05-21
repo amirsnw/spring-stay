@@ -1,7 +1,6 @@
 package com.stay.resource.cache;
 
-import com.stay.propertyEditor.cache.CacheConfigModel;
-import com.stay.propertyEditor.passenger.FullNameModel;
+import com.stay.domain.model.CacheConfigModel;
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.LRUMap;
 

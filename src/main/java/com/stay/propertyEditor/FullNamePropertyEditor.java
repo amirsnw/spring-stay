@@ -1,5 +1,6 @@
-package com.stay.propertyEditor.passenger;
+package com.stay.propertyEditor;
 
+import com.stay.domain.dto.FullNameDTO;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyEditorSupport;
@@ -12,39 +13,32 @@ public class FullNamePropertyEditor extends PropertyEditorSupport {
     // Is used to convert a String to another object.
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        List<Integer> parameters = extractConfig(text);
-        FullNameModel fullName = new FullNameModel(parameters.get(0), parameters.get(1));
+        String[] first_last_name = extractConfig(text);
+        FullNameDTO fullName = new FullNameDTO(first_last_name[0], first_last_name[1]);
         setValue(fullName);
     }
 
     // Is called when serializing an object to a String
     @Override
     public String getAsText() {
-        FullNameModel fullName = (FullNameModel) getValue();
+        FullNameDTO fullName = (FullNameDTO) getValue();
 
         return fullName == null ? "" : fullName.getRawFullName();
     }
 
-    private List<Integer> extractConfig(String text) {
+    private String[] extractConfig(String text) {
         List<Integer> parameters;
+        String[] fullName;
         if (StringUtils.isEmpty(text)) {
             throw new IllegalArgumentException("Empty FullName!");
         }
 
-        try {
-            parameters = Arrays
-                    .stream(text.split(" "))
-                    .map(item -> Integer.parseInt(text))
-                    .collect(Collectors.toList());
-        } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException(nfe);
-        }
-
-        if (parameters.size() != 2) {
+        fullName = text.split("-");
+        if (fullName.length < 2) {
             throw new IllegalArgumentException(
-                    "Cache config should be xxx-xxx-xxx");
+                    "Full-name should be xxx-xxx");
         }
 
-        return parameters;
+        return fullName;
     }
 }

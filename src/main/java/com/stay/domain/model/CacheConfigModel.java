@@ -1,4 +1,4 @@
-package com.stay.propertyEditor.cache;
+package com.stay.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

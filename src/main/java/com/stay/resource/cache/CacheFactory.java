@@ -1,6 +1,5 @@
 package com.stay.resource.cache;
 
-import com.stay.domain.Room;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.*;
 import org.springframework.context.ApplicationContext;

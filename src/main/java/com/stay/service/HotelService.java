@@ -1,6 +1,6 @@
 package com.stay.service;
 
-import com.stay.domain.Hotel;
+import com.stay.domain.entity.HotelEntity;
 import com.stay.resource.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,21 +15,21 @@ public class HotelService {
     @Autowired
     private HotelRepository hotelRepository;
 
-    public List<Hotel> getHotelList() {
+    public List<HotelEntity> getHotelList() {
         return hotelRepository.findAll();
     }
 
-    public Hotel saveHotel(Hotel hotel) {
-        return hotelRepository.save(hotel);
+    public HotelEntity saveHotel(HotelEntity hotelEntity) {
+        return hotelRepository.save(hotelEntity);
     }
 
-    public Hotel getHotel(int id) {
-        Optional<Hotel> hotel = hotelRepository.findById(id);
+    public HotelEntity getHotel(int id) {
+        Optional<HotelEntity> hotelEntity = hotelRepository.findById(id);
 
-        if (!hotel.isPresent())
+        if (!hotelEntity.isPresent())
             throw new EntityNotFoundException("id-" + id);
 
-        return hotel.get();
+        return hotelEntity.get();
     }
 
     public void deleteHotel(int id) {

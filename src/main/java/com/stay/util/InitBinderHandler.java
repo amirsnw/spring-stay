@@ -1,7 +1,7 @@
-package com.stay.exception;
+package com.stay.util;
 
-import com.stay.propertyEditor.passenger.FullNameModel;
-import com.stay.propertyEditor.passenger.FullNamePropertyEditor;
+import com.stay.domain.dto.FullNameDTO;
+import com.stay.propertyEditor.FullNamePropertyEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,6 +15,6 @@ public class InitBinderHandler {
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
-        dataBinder.registerCustomEditor(FullNameModel.class, new FullNamePropertyEditor());
+        dataBinder.registerCustomEditor(FullNameDTO.class, new FullNamePropertyEditor());
     }
 }
