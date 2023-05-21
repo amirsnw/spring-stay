@@ -18,7 +18,7 @@ public class StayWebServicesApplication {
 		context = SpringApplication.run(StayWebServicesApplication.class, args);
 
 		Runtime.getRuntime().addShutdownHook(new Thread(context::close));
-		// Calling explicitly ConfigurableBeanFactory.destroySingletons()
+		// is explicitly calling ConfigurableBeanFactory.destroySingletons():
 		// Clear all resources used by beans
 		// Flush memory and persistent context
 	}

@@ -6,23 +6,42 @@ import com.stay.domain.model.CacheConfigModel;
 import com.stay.resource.cache.BaseCache;
 import com.stay.resource.cache.BaseCacheImpl;
 import com.stay.resource.cache.CacheFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
+
+import java.util.Objects;
 
 @Configuration
-public class AppConfiguration {
+@PropertySource(value = "classpath:config.properties")
+public class AppConfiguration implements ApplicationContextAware {
 
-    /*@Value("120-500-6")
-    public CacheConfigModel cacheConfigModel;*/
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    Environment env;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
     @Bean
     public CacheFactory cacheFactoryBean() {
         CacheFactory factory = new CacheFactory();
         factory.addBean("default",
-                new BaseCacheImpl<String, Object>(new CacheConfigModel(60, 200, 3)));
+                new BaseCacheImpl<String, Object>(
+                        new CacheConfigModel(Long.parseLong(getProperty("cache.config.default.timeToLive")),
+                                Long.parseLong(getProperty("cache.config.default.timerInterval")),
+                                Integer.parseInt(getProperty("cache.config.default.maxItems")))));
         factory.addBean("room",
-                new BaseCacheImpl<Integer, RoomEntity>(new CacheConfigModel(120, 500, 6)));
+                new BaseCacheImpl<Integer, RoomEntity>(
+                        new CacheConfigModel(Long.parseLong(getProperty("cache.config.room.timeToLive")),
+                                Long.parseLong(getProperty("cache.config.room.timerInterval")),
+                                Integer.parseInt(getProperty("cache.config.room.maxItems")))));
         return factory;
     }
     // Note: Use FactoryBean to inject third-party classes that should be initialized by their specific getInstance method
@@ -45,23 +64,23 @@ public class AppConfiguration {
     */
 
     @Bean("room-cache")
+    // @DependsOn("cacheFactoryBean")
     public BaseCache roomCacheBean() {
         return (BaseCache) cacheFactoryBean().getBean("room", RoomEntity.class);
     }
 
-
     @Bean(initMethod = "generatorStarted", destroyMethod = "stopGenerator")
     @Lazy
-    // Default eager bootstrapping is by ApplicationContext
+    // Default bootstrapping is eager by ApplicationContext
     public ElectricityGenerator electricityGen() {
         return new ElectricityGenerator();
         // If initialization fails the exception wrap into BeanCreationException
     }
 
-    /*@Bean
-	public CacheFactory roomCacheResolver() {
-		return new CacheFactory(120, 500, 6);
-	}*/
+    private String getProperty(String propertyPath) {
+        return Objects.requireNonNull(env.getProperty(propertyPath),
+                "env: " + propertyPath + " not provided!");
+    }
 
 //	@Bean
 //	public LocaleResolver localeResolver() {
