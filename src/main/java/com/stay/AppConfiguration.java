@@ -17,6 +17,8 @@ import java.util.Objects;
 
 @Configuration
 @PropertySource(value = "classpath:config.properties")
+// @Import(AppConfigFour.class) // To import another Config Class
+// @ImportResource(value="classpath:spring/app-context.xml") // To import from Config XML
 public class AppConfiguration implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
