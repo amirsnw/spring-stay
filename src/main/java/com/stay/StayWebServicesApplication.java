@@ -1,14 +1,14 @@
 package com.stay;
 
-import com.stay.resource.cache.CacheFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
+@EnableMongoRepositories
 public class StayWebServicesApplication {
 
 	private static ConfigurableApplicationContext context;

@@ -1,4 +1,4 @@
-package com.stay.domain.entity;
+package com.stay.domain.jpaEntity;
 
 import lombok.*;
 

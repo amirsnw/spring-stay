@@ -1,6 +1,6 @@
 package com.stay.resource;
 
-import com.stay.domain.entity.RoomEntity;
+import com.stay.domain.jpaEntity.RoomEntity;
 import com.stay.exception.NotRecordFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,8 +1,8 @@
 package com.stay.controller;
 
-import com.stay.domain.entity.HotelEntity;
-import com.stay.domain.entity.RoomEntity;
 import com.stay.domain.dto.FullNameDTO;
+import com.stay.domain.jpaEntity.HotelEntity;
+import com.stay.domain.jpaEntity.RoomEntity;
 import com.stay.resource.cache.BaseCache;
 import com.stay.service.HotelService;
 import com.stay.service.RoomService;
@@ -12,7 +12,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 

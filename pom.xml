@@ -33,6 +33,11 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
@@ -47,7 +52,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- START AND STOP THE APPLICATION AFTER MAKING THE CHANGE! -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -78,7 +83,7 @@
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 		</dependency>
-		
+
 		<dependency>
 		  <groupId>io.springfox</groupId>
 		  <artifactId>springfox-boot-starter</artifactId>
@@ -97,6 +102,12 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<version>4.6.3</version>
 		</dependency>
 
 		<dependency>
@@ -123,7 +134,7 @@
 		</plugins>
 	</build>
 
-	<repositories>
+	<!--<repositories>
 		<repository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>
@@ -185,7 +196,5 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</pluginRepository>
-	</pluginRepositories>
-
-
+	</pluginRepositories>-->
 </project>

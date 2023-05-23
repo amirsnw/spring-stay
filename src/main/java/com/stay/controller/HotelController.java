@@ -1,7 +1,7 @@
 package com.stay.controller;
 
-import com.stay.domain.entity.HotelEntity;
-import com.stay.domain.entity.RoomEntity;
+import com.stay.domain.jpaEntity.HotelEntity;
+import com.stay.domain.jpaEntity.RoomEntity;
 import com.stay.resource.cache.BaseCache;
 import com.stay.service.HotelService;
 import com.stay.service.RoomService;

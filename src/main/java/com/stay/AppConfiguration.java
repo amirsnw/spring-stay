@@ -1,8 +1,8 @@
 package com.stay;
 
-import com.stay.domain.entity.RoomEntity;
-import com.stay.lifecycle.ElectricityGenerator;
+import com.stay.domain.jpaEntity.RoomEntity;
 import com.stay.domain.model.CacheConfigModel;
+import com.stay.lifecycle.ElectricityGenerator;
 import com.stay.resource.cache.BaseCache;
 import com.stay.resource.cache.BaseCacheImpl;
 import com.stay.resource.cache.CacheFactory;
@@ -10,7 +10,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 import java.util.Objects;
@@ -78,6 +81,16 @@ public class AppConfiguration implements ApplicationContextAware {
         return new ElectricityGenerator();
         // If initialization fails the exception wrap into BeanCreationException
     }
+
+    /*@Bean(destroyMethod = "stop")
+    public MongodProcess mongodProcess() throws IOException {
+        MongodConfig mongodConfig = MongodConfig.builder()
+                .version(Version.Main.PRODUCTION)
+                .net(newNet(MONGO_DB_URL, MONGO_DB_PORT, Network.localhostIsIPv6()))
+                .build();
+        MongodExecutable mongodExecutable = MongodStarter.getDefaultInstance().prepare(mongodConfig);
+        return mongodExecutable.start();
+    }*/
 
     private String getProperty(String propertyPath) {
         return Objects.requireNonNull(env.getProperty(propertyPath),
