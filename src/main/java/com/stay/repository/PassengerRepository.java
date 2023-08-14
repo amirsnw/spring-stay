@@ -1,4 +1,4 @@
-package com.stay.resource;
+package com.stay.repository;
 
 import com.stay.domain.mongoDocument.PassengerDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;

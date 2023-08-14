@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--XML solution for to get the default Cache bean:-->
+
+    <!-- This factory contains calling the getInstance method of the thirdParty class -->
+    <bean id="defaultCacheFactoryBean"
+          class="com.stay.cache.CacheFactory"/>
+
+    <!-- Third-party bean with no access to its code -->
+    <bean id="default-cache" factory-bean="defaultCacheFactoryBean" factory-method="getInstance"/>
+
+    <!-- Modify previously scanned bean definition -->
+    <bean id="reservationController"
+          class="com.stay.controller.ReservationController">
+        <property name="cacheService" ref="default-cache"/>
+    </bean>
+</beans>

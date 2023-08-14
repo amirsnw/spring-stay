@@ -1,7 +1,7 @@
 package com.stay.service;
 
-import com.stay.domain.jpaEntity.RoomEntity;
-import com.stay.resource.RoomRepository;
+import com.stay.domain.entity.RoomEntity;
+import com.stay.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

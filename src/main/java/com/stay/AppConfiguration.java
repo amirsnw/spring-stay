@@ -1,11 +1,11 @@
 package com.stay;
 
-import com.stay.domain.jpaEntity.RoomEntity;
+import com.stay.domain.entity.RoomEntity;
 import com.stay.domain.model.CacheConfigModel;
 import com.stay.lifecycle.ElectricityGenerator;
-import com.stay.resource.cache.BaseCache;
-import com.stay.resource.cache.BaseCacheImpl;
-import com.stay.resource.cache.CacheFactory;
+import com.stay.cache.BaseCache;
+import com.stay.cache.BaseCacheImpl;
+import com.stay.cache.CacheFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -74,6 +74,7 @@ public class AppConfiguration implements ApplicationContextAware {
         return (BaseCache) cacheFactoryBean().getBean("room", RoomEntity.class);
     }
 
+    // Bean Lazy initialization
     @Bean(initMethod = "generatorStarted", destroyMethod = "stopGenerator")
     @Lazy
     // Default bootstrapping is eager by ApplicationContext

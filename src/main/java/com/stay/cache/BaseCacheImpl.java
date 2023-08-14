@@ -1,4 +1,4 @@
-package com.stay.resource.cache;
+package com.stay.cache;
 
 import com.stay.domain.model.CacheConfigModel;
 import org.apache.commons.collections.MapIterator;

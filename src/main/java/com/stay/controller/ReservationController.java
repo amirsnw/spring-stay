@@ -1,9 +1,9 @@
 package com.stay.controller;
 
 import com.stay.domain.dto.FullNameDTO;
-import com.stay.domain.jpaEntity.HotelEntity;
-import com.stay.domain.jpaEntity.RoomEntity;
-import com.stay.resource.cache.BaseCache;
+import com.stay.domain.entity.HotelEntity;
+import com.stay.domain.entity.RoomEntity;
+import com.stay.cache.BaseCache;
 import com.stay.service.HotelService;
 import com.stay.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;

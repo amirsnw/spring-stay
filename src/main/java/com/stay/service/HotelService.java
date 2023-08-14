@@ -1,7 +1,7 @@
 package com.stay.service;
 
-import com.stay.domain.jpaEntity.HotelEntity;
-import com.stay.resource.HotelRepository;
+import com.stay.domain.entity.HotelEntity;
+import com.stay.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

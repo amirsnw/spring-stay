@@ -1,6 +1,6 @@
 package com.stay.util;
 
-import com.stay.domain.jpaEntity.RoomEntity;
+import com.stay.domain.entity.RoomEntity;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

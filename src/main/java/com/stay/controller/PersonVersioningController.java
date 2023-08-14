@@ -1,5 +1,8 @@
-package com.stay.versioning;
+package com.stay.controller;
 
+import com.stay.domain.model.versioning.Name;
+import com.stay.domain.model.versioning.PersonV1;
+import com.stay.domain.model.versioning.PersonV2;
 import org.springframework.web.bind.annotation.GetMapping;
 
 //@RestController

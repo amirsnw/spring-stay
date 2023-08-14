@@ -1,9 +1,10 @@
-package com.stay.resource.cache;
+package com.stay.cache;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.*;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -12,43 +13,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class CacheFactory implements BeanNameAware,
-        ApplicationContextAware, FactoryBean<BaseCache>, BeanFactory {
+@SuppressWarnings("rawtypes")
+public class CacheFactory implements FactoryBean<BaseCache>, BeanFactory {
 
     private final Map<String, BaseCache> beans = new HashMap<>();
-    private String beanName;
+
     private final String defaultBeanName = "default";
-    private ApplicationContext applicationContext;
 
-    @Override
-    public void setBeanName(String beanName) {
-        this.beanName = beanName;
+    public void addBean(String qualifier, BaseCache bean) {
+        beans.put(qualifier, bean);
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
+    /**
+     * ************************FactoryBean Methods**************************
+     * **/
     @Override
     public boolean isSingleton() {
         return true;
     }
 
     @Override
-    // Better not using wildcard
     public Class<BaseCache> getObjectType() {
         return BaseCache.class;
     }
 
     @Override
-    public BaseCache getObject() throws Exception {
-        // instead of: return new BaseCacheImpl<Integer, Room>(***);
+    public BaseCache getObject() {
         return (BaseCache) getBean(this.defaultBeanName);
-    }
-
-    public void addBean(String qualifier, BaseCache bean) {
-        beans.put(qualifier, bean);
     }
 
     /**
@@ -134,7 +125,7 @@ public class CacheFactory implements BeanNameAware,
 
     @Override
     public String[] getAliases(String s) {
-        String aliases[] = new String[beans.size()];
+        String[] aliases = new String[beans.size()];
         return beans.keySet().toArray(aliases);
     }
 }

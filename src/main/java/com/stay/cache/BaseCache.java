@@ -1,4 +1,4 @@
-package com.stay.resource.cache;
+package com.stay.cache;
 
 import java.util.List;
 

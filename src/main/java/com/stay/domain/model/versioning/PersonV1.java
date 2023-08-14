@@ -1,4 +1,4 @@
-package com.stay.versioning;
+package com.stay.domain.model.versioning;
 
 public class PersonV1 {
 	private String name;

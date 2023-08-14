@@ -1,7 +1,7 @@
 package com.stay.util;
 
 import com.stay.domain.dto.FullNameDTO;
-import com.stay.propertyEditor.FullNamePropertyEditor;
+import com.stay.domain.dto.propertyEditor.FullNamePropertyEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
