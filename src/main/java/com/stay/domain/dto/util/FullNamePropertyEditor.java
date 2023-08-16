@@ -1,4 +1,4 @@
-package com.stay.domain.dto.propertyEditor;
+package com.stay.domain.dto.util;
 
 import com.stay.domain.dto.FullNameDTO;
 import org.springframework.util.StringUtils;

@@ -61,7 +61,7 @@ public class HotelController {
 		HotelEntity hotelEntity = hotelService.getHotel(id);
 
 		// Create hateoas resource
-		EntityModel<HotelEntity> resource = EntityModel.of(hotelEntity); // new EntityModel<Hotel>(hotelEntity.get());
+		EntityModel<HotelEntity> resource = EntityModel.of(hotelEntity);
 
 		// Link to retrieveAllHotels resource
 		WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllHotels());
@@ -75,7 +75,7 @@ public class HotelController {
 
 	@DeleteMapping("/{id}")
 	public void deleteHotel(@PathVariable int id) {
-		hotelService.deleteHotel(id); // Returns 200
+		hotelService.deleteHotel(id);
 	}
 
 	// Room Related Resources

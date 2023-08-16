@@ -20,8 +20,8 @@ import java.util.Objects;
 
 @Configuration
 @PropertySource(value = "classpath:config.properties")
-// @Import(AppConfigFour.class) // To import another Config Class
-// @ImportResource(value="classpath:spring/app-context.xml") // To import from Config XML
+// To import another Config Class : @Import(AppConfigFour.class)
+// To import from a Config XML : @ImportResource(value="classpath:spring/app-context.xml")
 public class AppConfiguration implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
@@ -39,34 +39,16 @@ public class AppConfiguration implements ApplicationContextAware {
         CacheFactory factory = new CacheFactory();
         factory.addBean("default",
                 new BaseCacheImpl<String, Object>(
-                        new CacheConfigModel(Long.parseLong(getProperty("cache.config.default.timeToLive")),
-                                Long.parseLong(getProperty("cache.config.default.timerInterval")),
-                                Integer.parseInt(getProperty("cache.config.default.maxItems")))));
+                        new CacheConfigModel(getProperty("cache.config.default.timeToLive"),
+                                getProperty("cache.config.default.timerInterval"),
+                                getProperty("cache.config.default.maxItems"))));
         factory.addBean("room",
                 new BaseCacheImpl<Integer, RoomEntity>(
-                        new CacheConfigModel(Long.parseLong(getProperty("cache.config.room.timeToLive")),
-                                Long.parseLong(getProperty("cache.config.room.timerInterval")),
-                                Integer.parseInt(getProperty("cache.config.room.maxItems")))));
+                        new CacheConfigModel(getProperty("cache.config.room.timeToLive"),
+                                getProperty("cache.config.room.timerInterval"),
+                               getProperty("cache.config.room.maxItems"))));
         return factory;
     }
-    // Note: Use FactoryBean to inject third-party classes that should be initialized by their specific getInstance method
-    /*
-        XML solution for to get the default Cache bean:
-
-        <!-- This factory contains calling the getInstance method of the thirdParty class -->
-        <bean id="defaultCacheFactoryBean"
-             class="com.stay.resource.cache.CacheFactory"
-             p:beanName="default"/>
-
-        <!-- Third-party bean with no access to its code -->
-        <bean id="default-cache" factory-bean="defaultCacheFactoryBean" factory-method="getObject"/>
-
-        <!-- Modify previously scanned bean definition -->
-        <bean id="reservationController"
-            class="com.stay.controller.ReservationController">
-            <property name="cacheService" ref="default-cache" />
-        </bean>
-    */
 
     @Bean("room-cache")
     // @DependsOn("cacheFactoryBean")
@@ -74,13 +56,16 @@ public class AppConfiguration implements ApplicationContextAware {
         return (BaseCache) cacheFactoryBean().getBean("room", RoomEntity.class);
     }
 
-    // Bean Lazy initialization
-    @Bean(initMethod = "generatorStarted", destroyMethod = "stopGenerator")
     @Lazy
-    // Default bootstrapping is eager by ApplicationContext
+    @Bean(initMethod = "generatorStarted", destroyMethod = "stopGenerator")
     public ElectricityGenerator electricityGen() {
         return new ElectricityGenerator();
-        // If initialization fails the exception wrap into BeanCreationException
+        // If initialization fails the exception wraps into BeanCreationException
+    }
+
+    private String getProperty(String propertyPath) {
+        return Objects.requireNonNull(env.getProperty(propertyPath),
+                "env: " + propertyPath + " not provided!");
     }
 
     /*@Bean(destroyMethod = "stop")
@@ -93,26 +78,19 @@ public class AppConfiguration implements ApplicationContextAware {
         return mongodExecutable.start();
     }*/
 
-    private String getProperty(String propertyPath) {
-        return Objects.requireNonNull(env.getProperty(propertyPath),
-                "env: " + propertyPath + " not provided!");
-    }
+	/*@Bean
+	public LocaleResolver localeResolver() {
+		AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+		localeResolver.setDefaultLocale(Locale.US);
+		return localeResolver;
+	}*/
 
-//	@Bean
-//	public LocaleResolver localeResolver() {
-//		AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
-//		localeResolver.setDefaultLocale(Locale.US);
-//		return localeResolver;
-//	}
-
-//	@Bean("messageSource")
-//	public MessageSource messageSource() {
-//		ResourceBundleMessageSource messageSource =
-//				new ResourceBundleMessageSource();
-//		messageSource.setBasenames("language/messages");
-//		messageSource.setDefaultEncoding("UTF-8");
-//		return messageSource;
-//	}
-
-    // Note: We can use default-init-method="init" in xml to have the same method for initializing hook
+	/*@Bean("messageSource")
+	public MessageSource messageSource() {
+		ResourceBundleMessageSource messageSource =
+				new ResourceBundleMessageSource();
+		messageSource.setBasenames("language/messages");
+		messageSource.setDefaultEncoding("UTF-8");
+		return messageSource;
+	}*/
 }
